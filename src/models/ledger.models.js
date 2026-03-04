@@ -7,23 +7,23 @@ const ledgerSchema=new mongoose.Schema({
         ref:"account",
         required:[true,"Ledger must be associated with an account"],
         index:true,
-        immutabe:true
+        immutable:true
     },amount:{
         type:Number,
         required:[true,"Amount is required for creating a ledger entry"],
         immutable:true
 
     },
-    treansaction:{
+    transaction:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"transaction",
         required:[true,"Ledger must be associated with a transaction"],
         index:true,
-        imuutable:true
+        immutable:true
     },type:{
         type:String,
         enum:{
-            values:["CREATED","DEBIT"],
+            values:["CREDIT","DEBIT"],
             message:"Type can be either CREADIT or DEBIT",
         },
         required:[true,"Ledher is required"],

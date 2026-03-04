@@ -1,5 +1,6 @@
 const mongoose =require("mongoose")
 const bcrypt=require("bcryptjs")
+const { truncates } = require("bcryptjs")
 
 const userSchema=new mongoose.Schema({
     email:{
@@ -19,7 +20,14 @@ const userSchema=new mongoose.Schema({
         required:[true,"Password is required"],
         minlength:[8,"Password must be strong & greater than 8 characters"],
         // select:false
-    }
+    },
+    systemUser:{
+        type:Boolean,
+        default:false,
+      
+        select:false
+        }
+    
     
 },{
     timestamps:true

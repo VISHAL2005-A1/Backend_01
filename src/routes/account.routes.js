@@ -5,6 +5,8 @@ const router=express.Router()
 
 
 
-router.post("/",authMiddleware.authMiddleware,accountController.createdAccountController)
+router.post("/",authMiddleware.authMiddleware,accountController.createdAccountController);
+
+router.get("/balance/:accountId",authMiddleware.authMiddleware,accountController.getAccountBalanceController)
 
 module.exports=router

@@ -1,32 +1,68 @@
-const mongoose=require("mongoose")
-const accountSchema=new mongoose.Schema({
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user",
-        required:[true,"Account must be associated with a user"],
-        index:true
+const mongoose = require("mongoose")
+const ledgerModel = require("../models/ledger.models")
+
+const accountSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: [true, "Account must be associated with a user"],
+        index: true
 
     },
-    status:{
-        type:String,
-        enum:{
-            values:["ACTIVE","FROZEN","CLOSED"],
-            message:"Statys cab either ACTIVE, FROZEN or CLOSED",
-            
+    status: {
+        type: String,
+        enum: {
+            values: ["ACTIVE", "FROZEN", "CLOSED"],
+            message: "Status can either ACTIVE, FROZEN or CLOSED",
+
         },
-        default:"ACTIVE"
+        default: "ACTIVE"
 
     },
-    currency:{
-        type:String,
-        required:[true,"Currency is required for creating an Account"],
-        default:"INR"
+    currency: {
+        type: String,
+        required: [true, "Currency is required for creating an Account"],
+        default: "INR"
     }
 
-},{
-    timestamps:true
+}, {
+    timestamps: true
 })
-accountSchema.indexes({user:1,status:1})
 
-const accountModel=mongoose.model("account",accountSchema)
-module.exports =accountModel
+accountSchema.index({ user: 1, status: 1 })
+accountSchema.methods.getBalance = async function () {
+    const balanceData = await ledgerModel.aggregate([
+        { $match: { account: this._id } },
+        {
+            $group: {
+                _id: null,
+                totalDebit: {
+                    $sum: {
+                        $cond: [{ $eq: ["$type", "DEBIT"] },
+                            "$amount", 0]
+                    }
+                },
+                totalCredit:{
+                    $sum:{
+                        $cond:[{$eq:["$type","CREDIT"]},
+                    "$amount",0]
+                    }
+                }
+            }
+        },
+        {
+            $project:{
+                _id:0,
+                balance:{$subtract:["$totalCredit","$totalDebit"]}      
+             }
+        }
+    ])
+
+    if(balanceData.length===0){
+        return 0
+    }
+    return balanceData[0].balance
+}
+
+const accountModel = mongoose.model("account", accountSchema)
+module.exports = accountModel

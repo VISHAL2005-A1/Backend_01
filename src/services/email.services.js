@@ -107,8 +107,29 @@ The Backend_01 Team`;
   await sendEmail(userEmail, subject, text, html);
 }
 
+async function sendTransactionEmail(userEmail,name,amount, toAccount){
+  const subject="Transaction Successful!";
+  const text=`Hellon ${name}, \n\nYour transactionof $${amount} to account`;
+  const html=`<p>Hello ${name},<p></p>Your transaction  of $${amount} to account ${toAccount} was successful!</p>`
+
+  await sendEmail (userEmail, subject, text , html);
+}
+async function sendTransactionFailureEmail(userEmail,name,amount, toAccount){
+  const subject="Transaction Failed!";
+  const text=`Hellon ${name}, \n\nWe regret to inform you that your transaction of $${amount} to account`;
+  const html=`<p>Hello ${name},<p></p>Your transaction  of $${amount} to account ${toAccount} was Failed</p>`
+
+  await sendEmail (userEmail, subject, text , html);
+}
+
+
+
+
+
 module.exports = {
   sendRegistrationEmail,
+  sendTransactionEmail,
+  sendTransactionFailureEmail
 };
 // module.exports = sendEmail;
 

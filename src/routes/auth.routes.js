@@ -1,13 +1,14 @@
 const express=require("express")
-const authContoller=require("../controllers/auth.controller")
+const authController=require("../controllers/auth.controller")
 
 const router=express.Router()
 //POST /api/auth/register
-router.post("/register",authContoller.userRegisterController)
+router.post("/register",authController.userRegisterController)
 
 //POST /api/auth/login
-router.post("/login",authContoller.userLoginController)
+router.post("/login",authController.userLoginController)
 module.exports=router
 
-
+//POST  /api/auth/logout
+router.post("/logout",authController.userLogoutController);
 
